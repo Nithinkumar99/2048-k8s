@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: game-2048
+  namespace: default          # ArgoCD always lives in its own namespace
+  labels:
+    app: game-2048
+spec:
+  project: default           # ArgoCD project (use a dedicated one in production)
+
+  # ── Source: your Git repo containing the manifests ─────────────
+  source:
+    repoURL: https://github.com/Nithinkumar99/2048-k8s.git
+  destination:
+    server: https://kubernetes.default.svc   # in-cluster (change for remote cluster)
+    namespace: 2048-game
