@@ -1,14 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: 2048-app
+  name: 2048-deployment
+  namespace: 2048-game
   labels:
-    app: 2048
+    app: 2048-game
 spec:
   replicas: 3 
   selector:
     matchLabels:
-      app: 2048
+      app: 2048-game
   strategy:
     type: RollingUpdate
     maxUnavailable: 1
@@ -16,13 +17,19 @@ spec:
   template:
     metadata:
       labels:
-        app: 2048
+        app: 2048-game
     spec:
       imagePullSecrets:
         - name: dockerhub-secret
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      restartPolicy: Always
       containers:
         - name: 2048-container
-          image: docker.io/username/2048:v2
+          image: docker.io/nithinkumar99/2048:v2
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000
           resources:
@@ -32,4 +39,15 @@ spec:
             requests:
               memory: "256Mi"
               cpu: "250m"
-            
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:  
+               path: /
+               port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 5
