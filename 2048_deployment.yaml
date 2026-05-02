@@ -12,8 +12,6 @@ spec:
       app: 2048-game
   strategy:
     type: RollingUpdate
-    maxUnavailable: 1
-    maxSurge: 1
   template:
     metadata:
       labels:
@@ -28,7 +26,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: 2048-container
-          image: docker.io/nithinkumar99/2048:v2
+          image: nithinkumar99/2048_game:v2
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
